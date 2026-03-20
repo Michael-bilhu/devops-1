@@ -17,7 +17,7 @@ pipeline {
         stage('Deploy Container') {
             steps {
                 bat 'docker rm -f devops-app 2>NUL'
-                bat 'docker run -d --name devops-app -p 8090:80 devops-1:latest'
+                bat 'docker run -d --name devops-1 -p 8090:80 devops-1:latest'
             }
         }
     }
