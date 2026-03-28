@@ -4,7 +4,8 @@ pipeline {
     environment {
         DOCKERHUB_USER = 'michaelbilhu2'
         IMAGE_NAME = 'devops-1'
-        FULL_IMAGE = "${DOCKERHUB_USER}/${IMAGE_NAME}:latest"
+        VERSIONED_IMAGE = "${DOCKERHUB_USER}/${IMAGE_NAME}:${BUILD_NUMBER}
+        LATEST_IMAGE = "${DOCKERHUB_USER}/${IMAGE_NAME}:latest"
     }
 
     stages {
@@ -16,7 +17,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat "docker build -t %FULL_IMAGE% ."
+                bat "docker build -t %VERSIONED_IMAGE% -T %LATEST_IMAGE% ."
             }
         }
 
@@ -34,15 +35,15 @@ pipeline {
 
         stage('Push Image to Docker Hub') {
             steps {
-                bat "docker push %FULL_IMAGE%"
+                bat "docker push %VERSIONED_IMAGE%"
+                bat "docker push %LATEST_IMAGE%"
             }
         }
 
-        stage('Deploy Container') {
-            steps {
+        stage('Deploy Locally') { steps {
                 bat "docker rm -f devops-1 2>NUL"
-                bat "docker pull %FULL_IMAGE%"
-                bat "docker run -d --name devops-1 -p 8090:80 %FULL_IMAGE%"
+                bat "docker pull %VERSIONED_IMAGE%"
+                bat "docker run -d --name devops-1 -p 8090:80 %VERSIONED_IMAGE%"
             }
         }
     }
