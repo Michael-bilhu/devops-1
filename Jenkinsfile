@@ -1,10 +1,12 @@
-
 pipeline {
     agent any
 
     environment {
         DOCKERHUB_USER = 'michaelbilhu2'
         IMAGE_NAME = 'devops-1'
+        EC2_HOST = '3.17.151.34'
+        EC2_USER = 'ubuntu'
+        PEM_KEY = 'C:\\Users\\micha\\Downloads\\aws-key.pem'
     }
 
     stages {
@@ -39,12 +41,12 @@ pipeline {
             }
         }
 
-        stage('Deploy Locally') {
+        stage('Deploy to EC2') {
             steps {
-                bat "docker rm -f devops-1 2>NUL"
-                bat "docker run -d --name devops-1 -p 8090:80 %DOCKERHUB_USER%/%IMAGE_NAME%:%BUILD_NUMBER%"
+                bat """
+ssh -o StrictHostKeyChecking=no -i "%PEM_KEY%" %EC2_USER%@%EC2_HOST% "docker pull %DOCKERHUB_USER%/%IMAGE_NAME%:%BUILD_NUMBER% && docker rm -f devops-1 || true && docker run -d --name devops-1 -p 80:80 %DOCKERHUB_USER%/%IMAGE_NAME%:%BUILD_NUMBER%"
+"""
             }
         }
     }
 }
-
