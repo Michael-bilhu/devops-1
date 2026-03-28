@@ -6,7 +6,7 @@ pipeline {
         IMAGE_NAME = 'devops-1'
         EC2_HOST = '3.17.151.34'
         EC2_USER = 'ubuntu'
-        PEM_KEY = 'C:\\Users\\micha\\Downloads\\aws-key.pem'
+        PEM_KEY = 'C:\\Users\\Jenkins\\Keys\\aws-key.pem'
     }
 
     stages {
