@@ -29,6 +29,8 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
+                    bat "echo logging in as %DOCKER_USER%"
+                    bat "docker logout"
                     bat "docker login -u %DOCKER_USER% -p %DOCKER_PASS%"
                 }
             }
